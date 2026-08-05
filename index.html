@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>정보처리기사 필기 퀴즈</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="app">
+    <header class="top">
+      <div>
+        <p class="eyebrow">정보처리기사 필기</p>
+        <h1>모의고사</h1>
+      </div>
+      <p class="rule">문항당 5점 · 과목당 100점 · 과락 40 / 평균 60 합격</p>
+    </header>
+
+    <section id="screen-home" class="screen">
+      <h2>회차 선택</h2>
+      <p class="hint">회차 선택 → 전체(100문항) 또는 과목별(20문항) 응시. 20문제마다 과목이 바뀌고, 문항당 5점으로 과목별 점수·평균을 냅니다.</p>
+      <div id="exam-list" class="exam-list"></div>
+      <p id="home-empty" class="empty hidden">불러온 회차가 없습니다. data 폴더의 JS를 확인하세요.</p>
+    </section>
+
+    <section id="screen-mode" class="screen hidden">
+      <button type="button" class="link-back" data-back="home">← 회차 다시 선택</button>
+      <h2 id="mode-title">과목 / 모드 선택</h2>
+      <p class="hint">20문제씩 채점되며, 문항당 5점으로 과목 점수와 평균을 계산합니다.</p>
+      <div class="mode-grid">
+        <button type="button" class="card mode-card" data-mode="full">
+          <span class="card-kicker">추천</span>
+          <strong>전체 모의고사</strong>
+          <span>5과목 · 100문항 · 제출 후 과목별 점수 + 평균</span>
+        </button>
+        <button type="button" class="card mode-card" data-mode="subjects">
+          <strong>과목별 선택</strong>
+          <span>원하는 20문제 단위만 풀기</span>
+        </button>
+      </div>
+      <div id="subject-list" class="subject-list hidden"></div>
+    </section>
+
+    <section id="screen-quiz" class="screen hidden">
+      <div class="quiz-bar">
+        <button type="button" class="link-back" data-back="mode">← 모드 선택</button>
+        <div class="quiz-meta">
+          <strong id="quiz-title"></strong>
+          <span id="quiz-progress"></span>
+        </div>
+      </div>
+      <form id="quiz-form" class="quiz-form"></form>
+      <div class="quiz-actions">
+        <button type="submit" form="quiz-form" class="btn primary" id="btn-submit">채점하기</button>
+      </div>
+    </section>
+
+    <section id="screen-result" class="screen hidden">
+      <button type="button" class="link-back" data-back="mode">← 다시 풀기</button>
+      <h2>채점 결과</h2>
+      <div id="result-summary" class="result-summary"></div>
+      <div id="result-subjects" class="result-subjects"></div>
+      <div class="result-actions">
+        <button type="button" class="btn primary" id="btn-review">틀린 문제 / 해설 보기</button>
+        <button type="button" class="btn" id="btn-retry">같은 범위 다시 풀기</button>
+        <button type="button" class="btn ghost" data-back="home">회차 선택으로</button>
+      </div>
+      <div id="review-list" class="review-list hidden"></div>
+    </section>
+  </div>
+
+  <script src="data/2024-1.js"></script>
+  <script src="data/2024-2.js"></script>
+  <script src="data/2024-3.js"></script>
+  <script src="data/2025-1.js"></script>
+  <script src="data/2025-2.js"></script>
+  <script src="data/2025-3.js"></script>
+  <script src="data/2026-1.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
