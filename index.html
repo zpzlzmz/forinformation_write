@@ -7,13 +7,34 @@
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-  <div class="app">
+  <section id="screen-login" class="login-screen">
+    <form id="login-form" class="login-card" autocomplete="on">
+      <p class="eyebrow">정보처리기사 필기</p>
+      <h1>모의고사 로그인</h1>
+      <p class="hint">로그인 후 회차·해설을 볼 수 있습니다.</p>
+      <label class="login-field">
+        <span>아이디</span>
+        <input id="login-id" name="username" type="text" required autocomplete="username" />
+      </label>
+      <label class="login-field">
+        <span>비밀번호</span>
+        <input id="login-pw" name="password" type="password" required autocomplete="current-password" />
+      </label>
+      <p id="login-error" class="login-error hidden">아이디 또는 비밀번호가 올바르지 않습니다.</p>
+      <button type="submit" class="btn primary login-btn">로그인</button>
+    </form>
+  </section>
+
+  <div class="app hidden" id="app-root">
     <header class="top">
       <div>
         <p class="eyebrow">정보처리기사 필기</p>
         <h1>모의고사</h1>
       </div>
-      <p class="rule">문항당 5점 · 과목당 100점 · 과락 40 / 평균 60 합격</p>
+      <div class="top-right">
+        <p class="rule">문항당 5점 · 과목당 100점 · 과락 40 / 평균 60 합격</p>
+        <button type="button" class="btn ghost" id="btn-logout">로그아웃</button>
+      </div>
     </header>
 
     <section id="screen-home" class="screen">
@@ -70,13 +91,6 @@
     </section>
   </div>
 
-  <script src="data/2024-1.js"></script>
-  <script src="data/2024-2.js"></script>
-  <script src="data/2024-3.js"></script>
-  <script src="data/2025-1.js"></script>
-  <script src="data/2025-2.js"></script>
-  <script src="data/2025-3.js"></script>
-  <script src="data/2026-1.js"></script>
   <script src="app.js"></script>
 </body>
 </html>

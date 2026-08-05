@@ -3,6 +3,18 @@
   const SECTION_SIZE = 20;
   const PASS_SUBJECT = 40;
   const PASS_AVG = 60;
+  const AUTH_KEY = "quiz_auth_v1";
+  const AUTH_USER = "admin";
+  const AUTH_PASS = "admin";
+  const DATA_SCRIPTS = [
+    "data/2024-1.js",
+    "data/2024-2.js",
+    "data/2024-3.js",
+    "data/2025-1.js",
+    "data/2025-2.js",
+    "data/2025-3.js",
+    "data/2026-1.js",
+  ];
 
   const SUBJECTS = [
     { id: 1, name: "소프트웨어 설계", start: 1, end: 20 },
@@ -18,6 +30,7 @@
     subjectIds: [], // selected subject ids
     answers: {}, // n -> choice (1-4)
     lastResult: null,
+    dataLoaded: false,
   };
 
   const $ = (sel) => document.querySelector(sel);
@@ -27,6 +40,36 @@
     quiz: $("#screen-quiz"),
     result: $("#screen-result"),
   };
+
+  function isLoggedIn() {
+    return sessionStorage.getItem(AUTH_KEY) === "1";
+  }
+
+  function setLoggedIn(on) {
+    if (on) sessionStorage.setItem(AUTH_KEY, "1");
+    else sessionStorage.removeItem(AUTH_KEY);
+  }
+
+  function loadScript(src) {
+    return new Promise((resolve, reject) => {
+      const s = document.createElement("script");
+      s.src = src;
+      s.onload = () => resolve();
+      s.onerror = () => reject(new Error(`failed: ${src}`));
+      document.body.appendChild(s);
+    });
+  }
+
+  async function ensureData() {
+    if (state.dataLoaded) return;
+    await Promise.all(DATA_SCRIPTS.map(loadScript));
+    state.dataLoaded = true;
+  }
+
+  function showApp(loggedIn) {
+    $("#screen-login").classList.toggle("hidden", loggedIn);
+    $("#app-root").classList.toggle("hidden", !loggedIn);
+  }
 
   function show(name) {
     Object.entries(screens).forEach(([key, el]) => {
@@ -67,42 +110,18 @@
   /** 저장된 해설이 없으면 보기·문항 유형으로 짧은 요약 생성 */
   function buildExplanation(q) {
     const stored = (q.exp || "").trim();
-    if (stored) return stored;
-
-    const ans = q.ans;
-    const letter = answerLetter(ans);
-    const opt = String((q.opts || [])[ans - 1] || "").trim();
-    const stem = String(q.q || "");
-    const others = (q.opts || [])
-      .map((t, i) => ({ i: i + 1, t: String(t || "").trim() }))
-      .filter((o) => o.i !== ans && o.t);
-
-    const isWrongType = /틀린|옳지\s*않|아닌\s*것|거리가\s*먼|해당하지\s*않|옳지않은|아닌\s*것은/.test(stem);
-    const isRightType = /옳은\s*것|맞는\s*것|해당하는\s*것|올바른|부합|해당하(?:는|는가)/.test(stem);
-    const isCode = Boolean(q.code) || /결과|출력|실행되었|실행했을|프로그램/.test(stem);
-    const isCalc = /얼마|횟수|기간|점수|크기|개수|차수|간선/.test(stem);
-
-    let body;
-    if (isWrongType) {
-      body = `이 문제는 ‘틀린/옳지 않은’ 보기를 고르는 문항입니다. ${letter} 「${opt}」만 개념이 틀리거나 반대 설명이므로 정답입니다.`;
-      if (others.length) {
-        body += ` 나머지 보기(${others.map((o) => answerLetter(o.i)).join(", ")})는 대체로 올바른 설명에 가깝습니다.`;
-      }
-    } else if (isCode) {
-      body = `코드를 순서대로 따라가면 결과가 ${letter} 「${opt}」가 됩니다.`;
-    } else if (isCalc) {
-      body = `문제 조건으로 계산·판별하면 답이 ${letter} 「${opt}」입니다.`;
-    } else if (isRightType) {
-      body = `문제의 정의·조건에 가장 잘 맞는 보기는 ${letter} 「${opt}」입니다. 다른 보기는 비슷해 보여도 핵심 개념이나 범위가 다릅니다.`;
-    } else {
-      body = `이 문항에서 묻는 개념에 해당하는 보기는 ${letter} 「${opt}」입니다.`;
+    // 껍데기 템플릿(「다른 개념/조건」 등)은 쓰지 않음
+    if (
+      stored &&
+      !/다른 개념\/조건/.test(stored) &&
+      !/문항이 묻는 핵심 개념이/.test(stored) &&
+      !/문제의 정의·조건과 일치하는 보기/.test(stored)
+    ) {
+      return stored;
     }
-
-    if (q.box) {
-      body += ` 제시된 지문/표를 기준으로 보면 ${letter}번 설명이 가장 잘 맞습니다.`;
-    }
-
-    return `정답은 ${letter}번입니다.\n\n${body}`;
+    const letter = answerLetter(q.ans);
+    const opt = String((q.opts || [])[q.ans - 1] || "").trim();
+    return `정답은 ${letter}번「${opt}」입니다.\n\n이 문항 해설은 아직 개념 설명으로 교체 중입니다.`;
   }
 
   function revealQuestionCard(card, q, chosen = null) {
@@ -522,6 +541,47 @@
     startQuiz();
   });
 
-  renderHome();
-  show("home");
+  async function enterApp() {
+    showApp(true);
+    try {
+      await ensureData();
+    } catch (err) {
+      console.error(err);
+      alert("문제 데이터를 불러오지 못했습니다. 새로고침 후 다시 시도하세요.");
+      return;
+    }
+    renderHome();
+    show("home");
+  }
+
+  $("#login-form").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const id = ($("#login-id").value || "").trim();
+    const pw = $("#login-pw").value || "";
+    const err = $("#login-error");
+    if (id === AUTH_USER && pw === AUTH_PASS) {
+      err.classList.add("hidden");
+      setLoggedIn(true);
+      await enterApp();
+      return;
+    }
+    err.classList.remove("hidden");
+  });
+
+  $("#btn-logout").addEventListener("click", () => {
+    setLoggedIn(false);
+    state.exam = null;
+    state.answers = {};
+    state.lastResult = null;
+    showApp(false);
+    $("#login-pw").value = "";
+    $("#login-id").focus();
+  });
+
+  if (isLoggedIn()) {
+    enterApp();
+  } else {
+    showApp(false);
+    $("#login-id").focus();
+  }
 })();
