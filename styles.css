@@ -657,6 +657,18 @@ body {
   overflow-x: auto;
 }
 .note-item dt { font-weight: 700; margin-bottom: 5px; }
+/* 출제 횟수 배지. 섹션 배지(.note-count)보다 한 단계 조용해야 항목 이름이 먼저 읽힌다 */
+.note-hit {
+  margin-left: 7px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--muted);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 1px 8px;
+  white-space: nowrap;
+  vertical-align: 1px;
+}
 .note-item dd { margin: 0; }
 .note-v { white-space: pre-wrap; line-height: 1.75; }
 .note-t {

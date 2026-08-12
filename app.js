@@ -222,9 +222,50 @@
     return n;
   }
 
+  /**
+   * 암기노트 항목별 기출 출제 횟수. formula-map.js의 손분류를 항목 이름으로 되짚는다.
+   *
+   * 숫자를 notes.js에 직접 적어 두지 않는 이유: 분류가 바뀌면 두 파일이 조용히
+   * 갈라진다. 여기서 매번 세면 분류가 곧 표시값이라 갈라질 수가 없다.
+   */
+  function noteHitCounts() {
+    const map = window.FORMULA_MAP;
+    const labels = window.FORMULA_LABELS;
+    if (!map || !labels) return null;
+    const hits = new Map();
+    for (const v of Object.values(map)) {
+      // primary만 세면 부수적으로 쓰인 공식이 0회로 보인다 — 가스비용을 묻는 문항이
+      // 비에너지까지 물어도 비에너지 배지가 안 붙는 식이다. 배지의 뜻은
+      // "이 공식을 쓴 문항 수"이므로 also까지 센다.
+      const keys = [v.primary].concat(v.also || []);
+      const seen = new Set();
+      for (const key of keys) {
+        const meta = labels[key];
+        if (!meta || !meta.note) continue;
+        // 한 문항이 1종·3종 보안물건처럼 두 항목을 같이 물으면 양쪽에 센다
+        for (const note of [].concat(meta.note)) {
+          if (seen.has(note)) continue;
+          seen.add(note);
+          hits.set(note, (hits.get(note) || 0) + 1);
+        }
+      }
+    }
+    return hits;
+  }
+
   function renderNote() {
     const n = notesForCurrent();
     if (!n) return;
+    // 배지가 없는 항목 = 기출 15회차에 안 나온 것. 0회라고 찍지 않고 비워 둔다 —
+    // 0은 "안 나온다"가 아니라 "이 15회차에는 없었다"라서 단정하면 안 된다.
+    const hits = noteHitCounts();
+    const badge = (k) => {
+      const n2 = hits && hits.get(k);
+      return n2
+        ? `<span class="note-hit" title="기출 15회차(2019~2025) 중 이 공식을 쓴 문항 ${n2}개">${n2}회</span>`
+        : "";
+    };
+
     $("#note-title").textContent = n.title;
     $("#note-intro").textContent = n.intro;
     $("#note-body").innerHTML = n.sections
@@ -238,7 +279,7 @@
               .map(
                 (it) => `
               <div class="note-item">
-                <dt>${textHtml(it.k)}</dt>
+                <dt>${textHtml(it.k)}${badge(it.k)}</dt>
                 <dd class="note-v">${textHtml(it.v)}</dd>
                 ${it.t ? `<dd class="note-t">${textHtml(it.t)}</dd>` : ""}
               </div>`
