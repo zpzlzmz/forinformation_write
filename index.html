@@ -14,7 +14,7 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="apple-mobile-web-app-title" content="화약류실기" />
   <!-- ?v= 는 릴리스 버전. 앱을 고칠 때 올리면 브라우저 캐시가 확실히 갱신된다. -->
-  <link rel="stylesheet" href="styles.css?v=2" />
+  <link rel="stylesheet" href="styles.css?v=3" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" crossorigin="anonymous" />
   <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js" crossorigin="anonymous"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js" crossorigin="anonymous"></script>
@@ -68,8 +68,19 @@
       <button type="button" class="link-back" data-back="type">← 시험 유형 다시 선택</button>
       <h2 id="home-title">회차 선택</h2>
       <p class="hint" id="home-hint"></p>
+      <button type="button" class="note-open hidden" id="btn-note">
+        <strong>📒 암기노트</strong>
+        <span>기출 15회차를 세어 반복 출제된 것만 모았습니다</span>
+      </button>
       <div id="exam-list" class="exam-list"></div>
       <p id="home-empty" class="empty hidden">아직 등록된 문제가 없습니다.</p>
+    </section>
+
+    <section id="screen-note" class="screen hidden">
+      <button type="button" class="link-back" data-back="home">← 회차 선택으로</button>
+      <h2 id="note-title">암기노트</h2>
+      <p class="hint" id="note-intro"></p>
+      <div id="note-body"></div>
     </section>
 
     <section id="screen-mode" class="screen hidden">
@@ -119,8 +130,8 @@
     </section>
   </div>
 
-  <script src="data/catalog.js?v=2"></script>
-  <script src="app.js?v=2"></script>
+  <script src="data/catalog.js?v=3"></script>
+  <script src="app.js?v=3"></script>
   <script>
     if ("serviceWorker" in navigator) {
       window.addEventListener("load", () => {

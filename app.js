@@ -35,6 +35,7 @@
     cert: $("#screen-cert"),
     type: $("#screen-type"),
     home: $("#screen-home"),
+    note: $("#screen-note"),
     mode: $("#screen-mode"),
     quiz: $("#screen-quiz"),
     result: $("#screen-result"),
@@ -214,6 +215,42 @@
     });
   }
 
+  /** 암기노트 — 이 자격증·시험유형에 붙은 노트가 있으면 회차 목록 위에 띄운다. */
+  function notesForCurrent() {
+    const n = window.NOTES;
+    if (!n || n.cert !== state.cert?.id || n.type !== state.type?.id) return null;
+    return n;
+  }
+
+  function renderNote() {
+    const n = notesForCurrent();
+    if (!n) return;
+    $("#note-title").textContent = n.title;
+    $("#note-intro").textContent = n.intro;
+    $("#note-body").innerHTML = n.sections
+      .map(
+        (s) => `
+        <section class="note-sec">
+          <h3>${escapeHtml(s.title)} <span class="note-count">기출 ${s.count}문항</span></h3>
+          ${s.lead ? `<p class="note-lead">${textHtml(s.lead)}</p>` : ""}
+          <dl class="note-list">
+            ${s.items
+              .map(
+                (it) => `
+              <div class="note-item">
+                <dt>${textHtml(it.k)}</dt>
+                <dd class="note-v">${textHtml(it.v)}</dd>
+                ${it.t ? `<dd class="note-t">${textHtml(it.t)}</dd>` : ""}
+              </div>`
+              )
+              .join("")}
+          </dl>
+        </section>`
+      )
+      .join("");
+    typesetMath($("#note-body"));
+  }
+
   function renderHome() {
     const cert = state.cert;
     const type = state.type;
@@ -233,6 +270,7 @@
         ? "문항당 5점 · 과목당 100점 · 과락 40 / 평균 60 합격"
         : `100점 만점 · ${PASS_PRACTICAL}점 이상 합격`;
 
+    $("#btn-note").classList.toggle("hidden", !notesForCurrent());
     list.innerHTML = "";
     empty.classList.toggle("hidden", items.length > 0);
 
@@ -1164,6 +1202,12 @@
         show("home");
       }
     });
+  });
+
+  $("#btn-note").addEventListener("click", () => {
+    renderNote();
+    $("#top-title").textContent = "암기노트";
+    show("note");
   });
 
   $("#quiz-back").addEventListener("click", () => {

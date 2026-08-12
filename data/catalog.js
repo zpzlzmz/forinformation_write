@@ -51,6 +51,7 @@ window.CATALOG = {
           engine: "short",
           desc: "필답형 — 단답 · 계산 · 서술. 입력하면 바로 채점됩니다.",
           scripts: [
+            "data/expl/practical/notes.js",
             "data/expl/practical/basics-01.js",
             "data/expl/practical/basics-02.js",
             "data/expl/practical/basics-03.js",

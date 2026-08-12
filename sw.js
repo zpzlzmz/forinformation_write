@@ -3,15 +3,15 @@
  * 응답은 캐시를 먼저 내주고 뒤에서 새로 받아 갱신한다(stale-while-revalidate).
  * 그래서 문제를 추가해도 다음에 열 때 반영된다.
  */
-const CACHE = "expl-quiz-v3";
+const CACHE = "expl-quiz-v4";
 
 const SHELL = [
   "./",
   "./index.html",
-  "./app.js?v=2",
-  "./styles.css?v=2",
+  "./app.js?v=3",
+  "./styles.css?v=3",
   "./manifest.json",
-  "./data/catalog.js?v=2",
+  "./data/catalog.js?v=3",
   "./img/icon/icon-192.png",
   "./img/icon/icon-512.png",
 ];

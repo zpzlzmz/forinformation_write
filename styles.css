@@ -603,3 +603,67 @@ body {
 .ans-block-body .katex-display,
 .q-text, .ans-block-body { max-width: 100%; }
 .katex-display { overflow-x: auto; overflow-y: hidden; padding-bottom: 2px; }
+
+/* ── 암기노트 ─────────────────────────────────────────────── */
+
+.note-open {
+  appearance: none;
+  width: 100%;
+  display: grid;
+  gap: 4px;
+  text-align: left;
+  cursor: pointer;
+  margin-bottom: 14px;
+  padding: 14px 16px;
+  color: inherit;
+  border: 1px solid rgba(251, 191, 36, 0.45);
+  border-radius: var(--radius);
+  background: linear-gradient(180deg, rgba(251, 191, 36, 0.14), var(--panel));
+}
+.note-open strong { font-size: 1.05rem; }
+.note-open span { color: var(--muted); font-size: 0.88rem; }
+.note-open:hover { border-color: var(--warn); }
+
+.note-sec {
+  margin: 20px 0;
+  padding: 16px 18px;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+}
+.note-sec h3 {
+  margin: 0 0 4px;
+  font-size: 1.12rem;
+  letter-spacing: -0.02em;
+}
+.note-count {
+  margin-left: 8px;
+  font-size: 0.76rem;
+  font-weight: 400;
+  color: var(--accent);
+  border: 1px solid rgba(59, 158, 255, 0.35);
+  border-radius: 999px;
+  padding: 2px 9px;
+  white-space: nowrap;
+}
+.note-lead { margin: 0 0 12px; color: var(--muted); font-size: 0.9rem; }
+
+.note-list { margin: 0; display: grid; gap: 10px; }
+.note-item {
+  padding: 10px 12px;
+  background: var(--bg-soft);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  overflow-x: auto;
+}
+.note-item dt { font-weight: 700; margin-bottom: 5px; }
+.note-item dd { margin: 0; }
+.note-v { white-space: pre-wrap; line-height: 1.75; }
+.note-t {
+  margin-top: 6px;
+  padding-top: 6px;
+  border-top: 1px dashed var(--line);
+  color: var(--muted);
+  font-size: 0.9rem;
+  white-space: pre-wrap;
+}
