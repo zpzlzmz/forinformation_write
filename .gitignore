@@ -14,3 +14,6 @@ Thumbs.db
 .env
 .env.*
 !.env.example
+
+# 로컬 미리보기 서버 설정 (절대경로라 공유 불가)
+.claude/

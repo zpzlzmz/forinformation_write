@@ -2,16 +2,29 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>정보처리기사 필기 퀴즈</title>
-  <link rel="stylesheet" href="styles.css" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>화약류관리기사 실기</title>
+  <meta name="theme-color" content="#0f1419" />
+  <meta name="description" content="화약류관리기사 실기 필답형 기출·개념 드릴" />
+  <link rel="manifest" href="manifest.json" />
+  <link rel="apple-touch-icon" href="img/icon/apple-touch-icon.png" />
+  <link rel="icon" href="img/icon/icon-192.png" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="화약류실기" />
+  <!-- ?v= 는 릴리스 버전. 앱을 고칠 때 올리면 브라우저 캐시가 확실히 갱신된다. -->
+  <link rel="stylesheet" href="styles.css?v=2" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" crossorigin="anonymous" />
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js" crossorigin="anonymous"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js" crossorigin="anonymous"></script>
 </head>
 <body>
   <section id="screen-login" class="login-screen">
     <form id="login-form" class="login-card" autocomplete="on">
-      <p class="eyebrow">정보처리기사 필기</p>
-      <h1>모의고사 로그인</h1>
-      <p class="hint">로그인 후 회차·해설을 볼 수 있습니다.</p>
+      <p class="eyebrow">국가기술자격</p>
+      <h1>문제풀이 로그인</h1>
+      <p class="hint">로그인 후 자격증·회차·해설을 볼 수 있습니다.</p>
       <label class="login-field">
         <span>아이디</span>
         <input id="login-id" name="username" type="text" required autocomplete="username" />
@@ -28,20 +41,35 @@
   <div class="app hidden" id="app-root">
     <header class="top">
       <div>
-        <p class="eyebrow">정보처리기사 필기</p>
-        <h1>모의고사</h1>
+        <p class="eyebrow" id="top-eyebrow">국가기술자격</p>
+        <h1 id="top-title">문제풀이</h1>
       </div>
       <div class="top-right">
-        <p class="rule">문항당 5점 · 과목당 100점 · 과락 40 / 평균 60 합격</p>
+        <p class="rule" id="top-rule">자격증을 선택하세요</p>
+        <button type="button" class="btn ghost hidden" id="btn-install">앱으로 설치</button>
         <button type="button" class="btn ghost" id="btn-logout">로그아웃</button>
       </div>
     </header>
 
-    <section id="screen-home" class="screen">
-      <h2>회차 선택</h2>
-      <p class="hint">회차 선택 → 전체(100문항) 또는 과목별(20문항) 응시. 20문제마다 과목이 바뀌고, 문항당 5점으로 과목별 점수·평균을 냅니다.</p>
+    <section id="screen-cert" class="screen">
+      <h2>자격증 선택</h2>
+      <p class="hint">공부할 자격증을 고르세요.</p>
+      <div id="cert-list" class="exam-list"></div>
+    </section>
+
+    <section id="screen-type" class="screen hidden">
+      <button type="button" class="link-back" data-back="cert">← 자격증 다시 선택</button>
+      <h2 id="type-title">시험 유형 선택</h2>
+      <p class="hint">필기와 실기는 문제 형식도 채점 방식도 다릅니다.</p>
+      <div id="type-list" class="mode-grid"></div>
+    </section>
+
+    <section id="screen-home" class="screen hidden">
+      <button type="button" class="link-back" data-back="type">← 시험 유형 다시 선택</button>
+      <h2 id="home-title">회차 선택</h2>
+      <p class="hint" id="home-hint"></p>
       <div id="exam-list" class="exam-list"></div>
-      <p id="home-empty" class="empty hidden">불러온 회차가 없습니다. data 폴더의 JS를 확인하세요.</p>
+      <p id="home-empty" class="empty hidden">아직 등록된 문제가 없습니다.</p>
     </section>
 
     <section id="screen-mode" class="screen hidden">
@@ -64,7 +92,7 @@
 
     <section id="screen-quiz" class="screen hidden">
       <div class="quiz-bar">
-        <button type="button" class="link-back" data-back="mode">← 모드 선택</button>
+        <button type="button" class="link-back" id="quiz-back">← 뒤로</button>
         <div class="quiz-meta">
           <strong id="quiz-title"></strong>
           <span id="quiz-progress"></span>
@@ -78,7 +106,7 @@
     </section>
 
     <section id="screen-result" class="screen hidden">
-      <button type="button" class="link-back" data-back="mode">← 다시 풀기</button>
+      <button type="button" class="link-back" id="result-back">← 다시 풀기</button>
       <h2>채점 결과</h2>
       <div id="result-summary" class="result-summary"></div>
       <div id="result-subjects" class="result-subjects"></div>
@@ -91,6 +119,14 @@
     </section>
   </div>
 
-  <script src="app.js"></script>
+  <script src="data/catalog.js?v=2"></script>
+  <script src="app.js?v=2"></script>
+  <script>
+    if ("serviceWorker" in navigator) {
+      window.addEventListener("load", () => {
+        navigator.serviceWorker.register("sw.js").catch(() => {});
+      });
+    }
+  </script>
 </body>
 </html>

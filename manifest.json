@@ -1,0 +1,33 @@
+{
+  "name": "화약류관리기사 실기 문제풀이",
+  "short_name": "화약류실기",
+  "description": "화약류관리기사 실기 필답형 기출·개념 드릴. 답을 직접 입력하면 단위까지 채점합니다.",
+  "lang": "ko",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0f1419",
+  "theme_color": "#0f1419",
+  "categories": ["education"],
+  "icons": [
+    {
+      "src": "img/icon/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "img/icon/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "img/icon/icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}
