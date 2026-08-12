@@ -259,16 +259,30 @@
     // 배지가 없는 항목 = 기출 15회차에 안 나온 것. 0회라고 찍지 않고 비워 둔다 —
     // 0은 "안 나온다"가 아니라 "이 15회차에는 없었다"라서 단정하면 안 된다.
     const hits = noteHitCounts();
+    // 배지는 숫자만 보여주는 게 아니라 **외울 순서**를 보여줘야 한다.
+    // 그래서 빈도에 따라 세기를 다르게 준다 — 5회 이상이면 눈에 먼저 걸린다.
     const badge = (k) => {
       const n2 = hits && hits.get(k);
-      return n2
-        ? `<span class="note-hit" title="기출 15회차(2019~2025) 중 이 공식을 쓴 문항 ${n2}개">${n2}회</span>`
-        : "";
+      if (!n2) return "";
+      const tier = n2 >= 5 ? "hot" : n2 >= 3 ? "warm" : "mild";
+      return (
+        `<span class="note-hit note-hit--${tier}"` +
+        ` title="기출 15회차(2019~2025) 중 이 공식을 쓴 문항 ${n2}개">` +
+        `<b>${n2}</b>회</span>`
+      );
     };
 
     $("#note-title").textContent = n.title;
     $("#note-intro").textContent = n.intro;
-    $("#note-body").innerHTML = n.sections
+    const legend = hits
+      ? `<p class="note-legend">
+           <span>항목 옆 배지 = 기출 15회차에서 그 공식을 쓴 문항 수</span>
+           <span class="note-hit note-hit--hot"><b>5</b>회+</span>
+           <span class="note-hit note-hit--warm"><b>3</b>~4회</span>
+           <span class="note-hit note-hit--mild"><b>1</b>~2회</span>
+         </p>`
+      : "";
+    $("#note-body").innerHTML = legend + n.sections
       .map(
         (s) => `
         <section class="note-sec">

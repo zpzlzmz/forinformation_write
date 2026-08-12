@@ -657,17 +657,54 @@ body {
   overflow-x: auto;
 }
 .note-item dt { font-weight: 700; margin-bottom: 5px; }
-/* 출제 횟수 배지. 섹션 배지(.note-count)보다 한 단계 조용해야 항목 이름이 먼저 읽힌다 */
+/* 출제 횟수 배지.
+   숫자만 보여주는 게 아니라 외울 순서를 보여주는 장치라, 빈도에 따라 세기를 나눈다.
+   5회 이상이 페이지를 훑을 때 먼저 걸리고, 1~2회는 배경으로 물러난다. */
 .note-hit {
-  margin-left: 7px;
-  font-size: 0.72rem;
-  font-weight: 600;
-  color: var(--muted);
-  border: 1px solid var(--line);
+  display: inline-flex;
+  align-items: baseline;
+  gap: 1px;
+  margin-left: 8px;
+  padding: 2px 9px;
+  border: 1px solid transparent;
   border-radius: 999px;
-  padding: 1px 8px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  line-height: 1.45;
   white-space: nowrap;
-  vertical-align: 1px;
+  vertical-align: 2px;
+}
+/* 숫자가 배지의 주인공 — 단위(회)는 따라붙기만 한다 */
+.note-hit b {
+  font-size: 0.9rem;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.01em;
+}
+.note-hit--hot {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #08131f;
+}
+.note-hit--warm {
+  background: rgba(59, 158, 255, 0.12);
+  border-color: rgba(59, 158, 255, 0.45);
+  color: var(--accent);
+}
+.note-hit--mild {
+  background: var(--bg);
+  border-color: var(--line);
+  color: var(--muted);
+}
+/* 배지 색이 무슨 뜻인지 한 줄로 — 색만 있고 설명이 없으면 장식으로 읽힌다 */
+.note-legend {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin: 10px 0 0;
+  font-size: 0.8rem;
+  color: var(--muted);
 }
 .note-item dd { margin: 0; }
 .note-v { white-space: pre-wrap; line-height: 1.75; }
